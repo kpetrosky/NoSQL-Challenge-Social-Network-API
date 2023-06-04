@@ -1,54 +1,54 @@
-const { Course, friend } = require('../models');
+const { Profile, friend } = require('../models');
 
 module.exports = {
-  // Get all courses
-  getCourses(req, res) {
-    Course.find()
-      .then((courses) => res.json(courses))
+  // Get all profiles
+  getprofiles(req, res) {
+    profile.find()
+      .then((profiles) => res.json(profiles))
       .catch((err) => res.status(500).json(err));
   },
-  // Get a course
-  getSingleCourse(req, res) {
-    Course.findOne({ _id: req.params.courseId })
+  // Get a profile
+  getSingleprofile(req, res) {
+    profile.findOne({ _id: req.params.profileId })
       .select('-__v')
-      .then((course) =>
-        !course
-          ? res.status(404).json({ message: 'No course with that ID' })
-          : res.json(course)
+      .then((profile) =>
+        !profile
+          ? res.status(404).json({ message: 'No profile with that ID' })
+          : res.json(profile)
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Create a course
-  createCourse(req, res) {
-    Course.create(req.body)
-      .then((course) => res.json(course))
+  // Create a profile
+  createprofile(req, res) {
+    profile.create(req.body)
+      .then((profile) => res.json(profile))
       .catch((err) => {
         console.log(err);
         return res.status(500).json(err);
       });
   },
-  // Delete a course
-  deleteCourse(req, res) {
-    Course.findOneAndDelete({ _id: req.params.courseId })
-      .then((course) =>
-        !course
-          ? res.status(404).json({ message: 'No course with that ID' })
-          : friend.deleteMany({ _id: { $in: course.friends } })
+  // Delete a profile
+  deleteprofile(req, res) {
+    profile.findOneAndDelete({ _id: req.params.profileId })
+      .then((profile) =>
+        !profile
+          ? res.status(404).json({ message: 'No profile with that ID' })
+          : friend.deleteMany({ _id: { $in: profile.friends } })
       )
-      .then(() => res.json({ message: 'Course and friends deleted!' }))
+      .then(() => res.json({ message: 'profile and friends deleted!' }))
       .catch((err) => res.status(500).json(err));
   },
-  // Update a course
-  updateCourse(req, res) {
-    Course.findOneAndUpdate(
-      { _id: req.params.courseId },
+  // Update a profile
+  updateprofile(req, res) {
+    profile.findOneAndUpdate(
+      { _id: req.params.profileId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((course) =>
-        !course
-          ? res.status(404).json({ message: 'No course with this id!' })
-          : res.json(course)
+      .then((profile) =>
+        !profile
+          ? res.status(404).json({ message: 'No profile with this id!' })
+          : res.json(profile)
       )
       .catch((err) => res.status(500).json(err));
   },
