@@ -1,6 +1,7 @@
 //npm i 
 //npm i express
 //npm install mongoose
+//npm install nodemon --save-dev
 
 
 const express = require('express');
