@@ -28,11 +28,11 @@ const userSchema = new Schema({
     //need to figure out how to match a valid email address (look into Mongoose's matching validation)
   },
   thoughts: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Thought'
   }],
   friends: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }]
 });

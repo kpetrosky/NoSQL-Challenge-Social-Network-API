@@ -1,125 +1,64 @@
-//GET all users
-db.users.find()
-app.get('/api/users', (req, res) => {
-    // Retrieve all users from the database
-    // Example: use a User model and find() method
+const { Thought, User } = require('../models');
+
+module.exports = {
+  getuser(req, res) {
     User.find()
       .then(users => {
         res.json(users);
       })
       .catch(err => {
-        res.status(500).json({ error: 'An error occurred while retrieving users' });
+        res.status(500).json(err);
       });
-  });
-  
-
-//GET a single user by its _id and populated thought and friend data
-
-
-
-db.users.aggregate([
-    {
-      $match: { _id: ObjectId("123456789") }
-    },
-    {
-      $lookup: {
-        from: "thoughts",
-        localField: "thoughts",
-        foreignField: "_id",
-        as: "populatedThoughts"
+  },
+  getSingleuser(req, res) {
+    User.findById(req.params.userId)
+    .populate('thoughts')
+    .populate('friends')
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
       }
-    },
-    {
-      $lookup: {
-        from: "friends",
-        localField: "friends",
-        foreignField: "_id",
-        as: "populatedFriends"
+
+      res.json(user);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+  },
+  createuser (req, res) {
+    User.create(req.body)
+    .then(user => {
+      res.json(user);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+  },
+  updateuser(req,res) {
+    User.findOneAndUpdate({ _id: req.params.userId }, {$set:req.body}, { new: true })
+    .then(user => {
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
       }
-    }
-  ])
+      res.json(user);
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+  },
+  deleteuser(req,res){
+    User.findOneAndDelete({ _id: req.params.userId })
+    .then(result => {
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.json({ message: 'User deleted successfully' });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+  },
+}
 
 
-  app.get('/api/users/:id', (req, res) => {
-    const userId = req.params.id;
-  
-    // Retrieve a single user by its _id and populate thought and friend data
-    // Example: use a User model and findById() method with Mongoose population
-    User.findById(userId)
-      .populate('thoughts')
-      .populate('friends')
-      .exec()
-      .then(user => {
-        if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-  
-        res.json(user);
-      })
-      .catch(err => {
-        res.status(500).json({ error: 'An error occurred while retrieving the user' });
-      });
-  });
-  
-
-  //POST a new user:
-
-  db.users.insertOne({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    password: "secretpassword"
-  })
-
-  app.post('/api/users', (req, res) => {
-    const userData = req.body;
-  
-    // Create a new user in the database
-    // Example: use a User model and create() method
-    User.create(userData)
-      .then(user => {
-        res.json(user);
-      })
-      .catch(err => {
-        res.status(500).json({ error: 'An error occurred while creating the user' });
-      });
-  });
-
-  
-  app.put('/api/users/:id', (req, res) => {
-    const userId = req.params.id;
-    const updatedUserData = req.body;
-  
-    // Update the user by its _id
-    // Example: use a User model and findOneAndUpdate() method
-    User.findOneAndUpdate({ _id: userId }, updatedUserData, { new: true })
-      .then(user => {
-        if (!user) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-  
-        res.json(user);
-      })
-      .catch(err => {
-        res.status(500).json({ error: 'An error occurred while updating the user' });
-      });
-  });
-
-  
-  app.delete('/api/users/:id', (req, res) => {
-    const userId = req.params.id;
-  
-    // Remove the user by its _id
-    // Example: use a User model and deleteOne() method
-    User.deleteOne({ _id: userId })
-      .then(result => {
-        if (result.deletedCount === 0) {
-          return res.status(404).json({ error: 'User not found' });
-        }
-  
-        res.json({ message: 'User deleted successfully' });
-      })
-      .catch(err => {
-        res.status(500).json({ error: 'An error occurred while deleting the user' });
-      });
-  });
-  

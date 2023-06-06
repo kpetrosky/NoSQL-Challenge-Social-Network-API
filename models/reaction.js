@@ -11,15 +11,10 @@ const reactionSchema = new Schema(
         required: true,
         maxlength: 280,
       },
-    UserName: {
+    userName: {
       type: String,
       required: true,
       
-    },
-    createdAt: {
-      type: Number,
-      required: true,
-      default: () => Math.floor(Math.random() * (100 - 70 + 1) + 70),
     },
     createdAt: {
       type: Date,
