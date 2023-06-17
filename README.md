@@ -42,3 +42,4 @@ To add a screenshot, create an `assets/images` folder in your repository and upl
 
 ## Links
 https://github.com/kpetrosky/NoSQL-Challenge-Social-Network-API 
+https://watch.screencastify.com/v/v6Up5HqUHLmAYHzlGsPa 
